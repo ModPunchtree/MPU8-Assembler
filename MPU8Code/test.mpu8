@@ -1,0 +1,16 @@
+
+RST(R1);;
+INC(R2 R0);;
+.loop
+    ;;
+    ADD(R1 R2) JMP(.loop);;
+    ;;
+    ADD(R2 R1);;
+    ;;
+    ADD(R1 R2);;
+    ;;
+    ADD(R2 R1);;
+
+
+
+
