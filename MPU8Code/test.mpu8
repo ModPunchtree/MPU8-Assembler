@@ -1,16 +1,16 @@
 
-RST(R1);;
-INC(R2 R0);;
-.loop
-    ;;
-    ADD(R1 R2) JMP(.loop);;
-    ;;
-    ADD(R2 R1);;
-    ;;
-    ADD(R1 R2);;
-    ;;
-    ADD(R2 R1);;
+.setupRAM
+    RST(R1) JMP(.loop);;
+    ;; // 1
+    ;; // 2
+    .loop
+        INC(R1) FLG(NE);; // 3
+        STR(R1) JMP(.loop); STL(.halt); // 4
+        ;; // 5
+        SPT(R1);; // 6
 
+.halt
+    HLT();;
 
 
 

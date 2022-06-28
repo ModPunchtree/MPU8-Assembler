@@ -188,7 +188,7 @@ def assemble(rawCode: str) -> list:
     
     global IMMROM
     IMMROM = [[[0 for bitIndex in range(8)] for flag in range(2)] for instructionNumber in range(256)]
-    
+
     if len(code) > 256:
         raise Exception(f"FATAL - Code is longer than 256 lines\nThe code is currently {len(code)} lines long")
     

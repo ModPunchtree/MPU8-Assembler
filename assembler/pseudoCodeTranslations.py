@@ -100,6 +100,10 @@ def convertPseudoCode(line: str) -> tuple:
                     debug.expectedNumberOfOperands = (0, )
                     if numberOfOperands not in debug.expectedNumberOfOperands:
                         incorrectNumberOfOperands(debug)
+                    
+                    translation = []
+                    tokens = tokens[: operationIndex] + translation + tokens[tokenIndex: ]
+                    tokenIndex += len(translation) - (numberOfOperands + 3)
                 case "RST":
                     debug.expectedNumberOfOperands = (1, )
                     if numberOfOperands not in debug.expectedNumberOfOperands:

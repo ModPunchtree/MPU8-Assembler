@@ -1,6 +1,7 @@
 
 from assembler.assembler import assemble
 from assembler.fileParse import fetchRawMPU8Code
+from schematicGenerator.machineCodeToSchematic import generateSchematics
 
 source = input("Input file name without extension: ")
 
@@ -65,6 +66,4 @@ answer = ((f"Non-flag Instruction ROM:\n{nonFlagROM}{nonflagColumn}\n\nFlag Inst
 
 print(answer)
 
-
-
-
+generateSchematics(instructionROM, immediateROM, source)

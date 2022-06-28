@@ -26,6 +26,11 @@ def cleanCode(rawCode: str) -> list:
     # replace "  " with " " until "  " doesnt exist
     while code.find("  ") != -1:
         code = code.replace("  ", " ")
+    code = code.replace("\n ", "\n")
+    if code.startswith(" "):
+        code = code[1: ]
+    if code.endswith(" "):
+        code = code[: -1]
 
     # replace "\n\n" with "\n" until "\n\n" doesnt exist
     while code.find("\n\n") != -1:
@@ -87,17 +92,17 @@ def cleanCode(rawCode: str) -> list:
             code[lineNumber] = line[: line.index("-")] + str(number) + line[end: ]
     
     # convert relatives to literals
-    for lineNumber, line in enumerate(code):
-        while line.find("~") != -1:
+    for lineNumber in range(len(code)):
+        while code[lineNumber].find("~") != -1:
             try:
-                relative = line[line.index("~"): line[line.index("~"): ].index(" ")]
-                end = line[line.index("~"): ].index(" ")
-            except:
-                relative = line[line.index("~"): line[line.index("~"): ].index(")")]
-                end = line[line.index("~"): ].index(")")
+                relative = code[lineNumber][code[lineNumber].index("~"): code[lineNumber][code[lineNumber].index("~"): ].index(" ") + code[lineNumber].index("~")]
+                end = code[lineNumber][code[lineNumber].index("~"): ].index(" ") + code[lineNumber].index("~")
+            except:                
+                relative = code[lineNumber][code[lineNumber].index("~"): code[lineNumber][code[lineNumber].index("~"): ].index(")") + code[lineNumber].index("~")]
+                end = code[lineNumber][code[lineNumber].index("~"): ].index(")") + code[lineNumber].index("~")
             number = int(relative[1: ], 0)
             literal = str(lineNumber + number)
-            code[lineNumber] = line[: line.index("~")] + literal + line[end: ]
+            code[lineNumber] = code[lineNumber][: code[lineNumber].index("~")] + literal + code[lineNumber][end: ]
     
     # convert mmio locations
     for lineNumber, line in enumerate(code):
