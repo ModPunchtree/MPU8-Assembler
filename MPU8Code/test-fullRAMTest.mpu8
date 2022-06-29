@@ -1,0 +1,39 @@
+
+/*
+    Simple RAM test
+    the result of the test is in register 2 after the program halts
+    if register 2 contains 128 - then the test succeeded
+    otherwise, register 2 will contain the address of the ram location that failed
+*/
+
+.setupRAM
+    RST(R1) JMP(.loop);;
+    ;; // 1
+    ;; // 2
+    .loop
+        INC(R1) FLG(NE);; // 3
+        STR(R1) JMP(.loop); STL(.readRAM); // 4
+        ;; // 5
+        SPT(R1);; // 6
+
+.readRAM
+    RST(R1) SPT(0);;
+
+    .loop2
+        ; DEC(R2 R1) STL(.halt); // 1
+        ;; // 2
+        ;; // 3
+        ;; // 4 // 1
+        JMP(.loop2);; // 5 // 2
+        INC(R1);; // 6 // 3
+        CMP(SR R1) FLG(!ZF);; // 4
+        ;; // 5
+        SPT(R1);; // 6
+        ;;
+        ;;
+
+.halt
+    HLT();;
+
+
+

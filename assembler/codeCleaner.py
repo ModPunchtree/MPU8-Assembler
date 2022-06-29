@@ -1,5 +1,5 @@
 
-from assembler.pseudoCodeTranslations import convertMMIOPointers, convertPseudoCode
+from assembler.pseudoCodeTranslations import convertChar, convertMMIOPointers, convertPseudoCode
 
 def cleanCode(rawCode: str) -> list:
 
@@ -12,6 +12,8 @@ def cleanCode(rawCode: str) -> list:
     # check for double ; on every instruction
     # convert labels to literals
     # convert relatives to literals
+    # convert mmio locations
+    # convert chars to literals
     # convert pseudo-asm to asm
     
     code = rawCode
@@ -74,22 +76,22 @@ def cleanCode(rawCode: str) -> list:
         line = code[lineNumber]
         if line.startswith("."):
             label = line
-            code = [line2.replace(label, str(lineNumber)) for line2 in code]
+            code = [line2.replace(label + " ", str(lineNumber) + " ").replace(label + ")", str(lineNumber) + ")") for line2 in code]
             code.pop(lineNumber)
         else:
             lineNumber += 1
     
     # convert negative numbers
-    for lineNumber, line in enumerate(code):
-        while line.find("-") != -1:
+    for lineNumber in range(len(code)):
+        while code[lineNumber].find("-") != -1:
             try:
-                negative = line[line.index("-"): line[line.index("-"): ].index(" ")]
-                end = line[line.index("-"): ].index(" ")
+                negative = code[lineNumber][code[lineNumber].index("-"): code[lineNumber][code[lineNumber].index("-"): ].index(" ")]
+                end = code[lineNumber][code[lineNumber].index("-"): ].index(" ")
             except:
-                negative = line[line.index("-"): line[line.index("-"): ].index(")")]
-                end = line[line.index("-"): ].index(")")
+                negative = code[lineNumber][code[lineNumber].index("-"): code[lineNumber][code[lineNumber].index("-"): ].index(")")]
+                end = code[lineNumber][code[lineNumber].index("-"): ].index(")")
             number = int(negative, 0) + 256
-            code[lineNumber] = line[: line.index("-")] + str(number) + line[end: ]
+            code[lineNumber] = code[lineNumber][: code[lineNumber].index("-")] + str(number) + code[lineNumber][end: ]
     
     # convert relatives to literals
     for lineNumber in range(len(code)):
@@ -105,15 +107,23 @@ def cleanCode(rawCode: str) -> list:
             code[lineNumber] = code[lineNumber][: code[lineNumber].index("~")] + literal + code[lineNumber][end: ]
     
     # convert mmio locations
-    for lineNumber, line in enumerate(code):
-        while line.find("*") != -1:
+    for lineNumber in range(len(code)):
+        while code[lineNumber].find("*") != -1:
             try:
-                mmio = line[line.index("*"): line[line.index("*"): ].index(" ")]
-                end = line[line.index("*"): ].index(" ")
+                mmio = code[lineNumber][code[lineNumber].index("*"): code[lineNumber][code[lineNumber].index("*"): ].index(" ")]
+                end = code[lineNumber][code[lineNumber].index("*"): ].index(" ")
             except:
-                mmio = line[line.index("*"): line[line.index("*"): ].index(")")]
-                end = line[line.index("*"): ].index(")")
-            code[lineNumber] = line[: line.index("*")] + convertMMIOPointers(mmio) + line[end: ]
+                mmio = code[lineNumber][code[lineNumber].index("*"): code[lineNumber][code[lineNumber].index("*"): ].index(")")]
+                end = code[lineNumber][code[lineNumber].index("*"): ].index(")")
+            code[lineNumber] = code[lineNumber][: code[lineNumber].index("*")] + convertMMIOPointers(mmio) + code[lineNumber][end: ]
+    
+    # convert chars to literals
+    for lineNumber in range(len(code)):
+        while code[lineNumber].find("'") != -1:
+            start = code[lineNumber].index("'")
+            end = code[lineNumber][start + 1: ].index("'") + 2 + code[lineNumber].index("'")
+            char = code[lineNumber][start: end]
+            code[lineNumber] = code[lineNumber][: start] + convertChar(char) + code[lineNumber][end: ]
     
     # convert pseudo-asm to asm
     code = [convertPseudoCode(line) for line in code]
