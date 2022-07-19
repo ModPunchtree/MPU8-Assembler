@@ -1,9 +1,22 @@
 
-from os import system, getcwd
+from os import system, getcwd, name as osname
+
+from os.path import normpath
+
+def runCommand () -> None:
+
+    currentDirectory = getcwd ()
+
+    if osname == "nt":
+        system (f"{currentDirectory}\\schematics\\command.cmd") # no need to account for posix on a nt system
+    elif osname == "posix":
+        system (f"wine cmd.exe /c {currentDirectory}/schematics/command.cmd") # no need to account for nt on a posix system
+    else:
+        print (f"unknown system {osname}")
 
 def fetchEmptyInstructionROM() -> tuple:
     
-    f = open("schematics\\MPU8_INSROM.snbt", "r")
+    f = open( normpath ("schematics/MPU8_INSROM.snbt"), "r")
     result = f.read()
     f.close()
     
@@ -27,7 +40,7 @@ def fetchEmptyInstructionROM() -> tuple:
 
 def fetchEmptyImmediateROM() -> tuple:
 
-    f = open("schematics\\MPU8_IMMROM.snbt", "r")
+    f = open( normpath ("schematics/MPU8_IMMROM.snbt"), "r")
     result = f.read()
     f.close()
     
@@ -109,7 +122,7 @@ def generateSchematics(instructionROM: list, immediateROM: list, name: str) -> N
     
     result = start + outputBlocks + end
     
-    f = open(f"schematics\\{name}_INSROM.snbt", "w")
+    f = open( normpath (f"schematics/{name}_INSROM.snbt"), "w")
     f.write(result)
     f.close()
     
@@ -117,10 +130,11 @@ def generateSchematics(instructionROM: list, immediateROM: list, name: str) -> N
 SnbtCmd.exe path \"{currentDirectory}\\schematics\\{name}_INSROM.snbt\" to-nbt > \"{name}_INSROM.schematic\"
 gzip \"{name}_INSROM.schematic\"
 rename \"{currentDirectory}\\schematics\\{name}_INSROM.schematic.gz\" \"{name}_INSROM.schematic\""""
+    f = open( normpath ("schematics/command.cmd"), "w")
     f.write(command)
     f.close()
     
-    system(f"{currentDirectory}\\schematics\\command.cmd")
+    runCommand ()
 
     ################################################################################
     
@@ -191,7 +205,7 @@ rename \"{currentDirectory}\\schematics\\{name}_INSROM.schematic.gz\" \"{name}_I
     
     result = start + outputBlocks + end
     
-    f = open(f"schematics\\{name}_IMMROM.snbt", "w")
+    f = open( normpath (f"schematics/{name}_IMMROM.snbt"), "w")
     f.write(result)
     f.close()
     
@@ -199,7 +213,8 @@ rename \"{currentDirectory}\\schematics\\{name}_INSROM.schematic.gz\" \"{name}_I
 SnbtCmd.exe path \"{currentDirectory}\\schematics\\{name}_IMMROM.snbt\" to-nbt > \"{name}_IMMROM.schematic\"
 gzip \"{name}_IMMROM.schematic\"
 rename \"{currentDirectory}\\schematics\\{name}_IMMROM.schematic.gz\" \"{name}_IMMROM.schematic\""""
+    f = open( normpath ("schematics/command.cmd"), "w")
     f.write(command)
     f.close()
     
-    system(f"{currentDirectory}\\schematics\\command.cmd")
+    runCommand ()
