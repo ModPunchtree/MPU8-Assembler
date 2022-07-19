@@ -113,8 +113,10 @@ def generateSchematics(instructionROM: list, immediateROM: list, name: str) -> N
     f.write(result)
     f.close()
     
-    command = f"cd \"{currentDirectory}\\schematics\"\nSnbtCmd.exe path \"{currentDirectory}\\schematics\\{name}_INSROM.snbt\" to-nbt > \"{name}_INSROM.schematic\"\ngzip \"{name}_INSROM.schematic\"\nrename \"{currentDirectory}\\schematics\\{name}_INSROM.schematic.gz\" \"{name}_INSROM.schematic\""
-    f = open("schematics\\command.cmd", "w")
+    command = f"""cd \"{currentDirectory}\\schematics\"
+SnbtCmd.exe path \"{currentDirectory}\\schematics\\{name}_INSROM.snbt\" to-nbt > \"{name}_INSROM.schematic\"
+gzip \"{name}_INSROM.schematic\"
+rename \"{currentDirectory}\\schematics\\{name}_INSROM.schematic.gz\" \"{name}_INSROM.schematic\""""
     f.write(command)
     f.close()
     
@@ -193,8 +195,10 @@ def generateSchematics(instructionROM: list, immediateROM: list, name: str) -> N
     f.write(result)
     f.close()
     
-    command = f"cd \"{currentDirectory}\\schematics\"\nSnbtCmd.exe path \"{currentDirectory}\\schematics\\{name}_IMMROM.snbt\" to-nbt > \"{name}_IMMROM.schematic\"\ngzip \"{name}_IMMROM.schematic\"\nrename \"{currentDirectory}\\schematics\\{name}_IMMROM.schematic.gz\" \"{name}_IMMROM.schematic\""
-    f = open("schematics\\command.cmd", "w")
+    command = f"""cd \"{currentDirectory}\\schematics\"
+SnbtCmd.exe path \"{currentDirectory}\\schematics\\{name}_IMMROM.snbt\" to-nbt > \"{name}_IMMROM.schematic\"
+gzip \"{name}_IMMROM.schematic\"
+rename \"{currentDirectory}\\schematics\\{name}_IMMROM.schematic.gz\" \"{name}_IMMROM.schematic\""""
     f.write(command)
     f.close()
     
